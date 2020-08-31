@@ -26,6 +26,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void CreateBond(const UChildActorComponent* ChildAtomComponent1, const UChildActorComponent* ChildAtomComponent2, const TSubclassOf<ABondBase> BondClass, AAtom*& OutAtom1, AAtom*& OutAtom2, ABondBase*& OutBond);
 
+	static void CreateBond(AAtom* Atom1, AAtom* Atom2, const TSubclassOf<ABondBase> BondClass, ABondBase*& OutBond);
+
 	UFUNCTION(BlueprintCallable)
 	bool AttachToAtoms(AAtom* NewAtom1, AAtom* NewAtom2);
 

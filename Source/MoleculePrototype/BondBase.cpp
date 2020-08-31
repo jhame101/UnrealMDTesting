@@ -54,13 +54,18 @@ void ABondBase::Destroyed() {
 
 }*/
 
+void ABondBase::CreateBond(AAtom* Atom1, AAtom* Atom2, const TSubclassOf<ABondBase> BondClass, ABondBase*& OutBond)
+{
+	if (!Atom1 || !Atom2) { return; }
+	UWorld* World = GEngine->GetWorldFromContextObject(Atom1);
+	OutBond = Cast<ABondBase>(World->SpawnActor(BondClass));
+	OutBond->AttachToAtoms(Atom1, Atom2);
+}
+
 void ABondBase::CreateBond(const UChildActorComponent* ChildAtomComponent1, const UChildActorComponent* ChildAtomComponent2, const TSubclassOf<ABondBase> BondClass, AAtom*& OutAtom1, AAtom*& OutAtom2, ABondBase*& OutBond) {
 	OutAtom1 = Cast<AAtom>(ChildAtomComponent1->GetChildActor());
 	OutAtom2 = Cast<AAtom>(ChildAtomComponent2->GetChildActor());
-	if (!OutAtom1 || !OutAtom2) { return; }
-	UWorld* World = GEngine->GetWorldFromContextObject(OutAtom1);
-	OutBond = Cast<ABondBase>(World->SpawnActor(BondClass));
-	OutBond->AttachToAtoms(OutAtom1, OutAtom2);
+	CreateBond(OutAtom1, OutAtom2, BondClass, OutBond);		//There is null checking in the other override
 }
 
 bool ABondBase::AttachToAtoms(AAtom* NewAtom1, AAtom* NewAtom2) {
