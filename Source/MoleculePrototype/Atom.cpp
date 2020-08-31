@@ -5,10 +5,8 @@
 #include "BondBase.h"
 #include "Math/UnrealMathUtility.h"
 
-// Sets default values
 AAtom::AAtom()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	PhysicsMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Physics Mesh"));
@@ -23,7 +21,6 @@ AAtom::AAtom()
 
 }
 
-// Called when the game starts or when spawned
 void AAtom::BeginPlay()
 {
 	Super::BeginPlay();
@@ -46,8 +43,6 @@ FVector AAtom::InitialPush(float Strength) {
 	PhysicsMesh->AddImpulse(Impulse, NAME_None, false);
 
 	return Impulse;
-
-	return FVector(0);
 }
 
 void AAtom::AddBond(ABondBase* NewBond) {

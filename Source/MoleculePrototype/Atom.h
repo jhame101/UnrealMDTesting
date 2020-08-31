@@ -36,7 +36,8 @@ protected:
 	TSet<ABondBase*> Bonds;
 
 private:
+	//When an atom is bonded, it seems to constantly lose energy to the PhysicsConstraint that makes the bond. This negative linear damping is janky so a proper fix should really be created at some point
 	UPROPERTY(EditDefaultsOnly)
-	float LinearDampingPerBond = -0.10;		//When an atom is bonded, it seems to constantly lose energy to the PhysicsConstraint that makes the bond. This negative 
+	float LinearDampingPerBond = -0.10;
 
 };

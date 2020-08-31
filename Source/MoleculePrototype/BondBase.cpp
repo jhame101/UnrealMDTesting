@@ -40,12 +40,9 @@ void ABondBase::BeginPlay()
 }
 
 void ABondBase::Destroyed() {
-	if (BondedAtom1) {
-		BondedAtom1->RemoveBond(this);
-	}
-	if (BondedAtom2) {
-		BondedAtom2->RemoveBond(this);
-	}
+	Super::Destroyed();
+
+	ReleaseAtoms();
 }
 
 /*void ABondBase::Tick(float DeltaTime)
@@ -69,28 +66,27 @@ void ABondBase::CreateBond(const UChildActorComponent* ChildAtomComponent1, cons
 }
 
 bool ABondBase::AttachToAtoms(AAtom* NewAtom1, AAtom* NewAtom2) {
-	if (!ensure(BondConstraint) || !NewAtom1 || !NewAtom2) return 0;
+	if (!ensure(BondConstraint) || !NewAtom1 || !NewAtom2) return false;
 	UPrimitiveComponent* ConstrainedComponent1 = Cast<UPrimitiveComponent>(NewAtom1->GetRootComponent());
 	UPrimitiveComponent* ConstrainedComponent2 = Cast<UPrimitiveComponent>(NewAtom2->GetRootComponent());
-	if (!ConstrainedComponent1 || !ConstrainedComponent2) return 0;
-	if (BondedAtom1) {
-		BondedAtom1->RemoveBond(this);
-	}
-	if (BondedAtom2) {
-		BondedAtom2->RemoveBond(this);
-	}
+	if (!ConstrainedComponent1 || !ConstrainedComponent2) return false;
+
+	ReleaseAtoms();
 	BondedAtom1 = NewAtom1;
 	BondedAtom2 = NewAtom2;
-	BondConstraint->BreakConstraint();
 	SetActorTransform(GetBondWorldTransform(NewAtom1->GetActorLocation(), NewAtom2->GetActorLocation()));
 	BondConstraint->ConstraintActor1 = NewAtom1;
 	BondConstraint->ConstraintActor2 = NewAtom2;
 	BondConstraint->SetConstrainedComponents(ConstrainedComponent1, FName::FName(), ConstrainedComponent2, FName::FName());
+
 	BondConstraint->InitComponentConstraint();
+
+	// Make it follow the atoms it's bonded to
 	AttachToActor(NewAtom1, FAttachmentTransformRules::KeepWorldTransform);
 	NewAtom1->AddBond(this);
 	NewAtom2->AddBond(this);
-	return 1;
+
+	return true;
 
 }
 
@@ -99,4 +95,19 @@ FTransform ABondBase::GetBondWorldTransform(const FVector& Position1, const FVec
 	FRotator Rotation = (Position2 - Position1).Rotation();
 	FVector Scale = FVector(BondLength/BondStaticMeshLength, 1, 1);
 	return FTransform(Rotation, Position, Scale);
+}
+
+void ABondBase::ReleaseAtoms()
+{
+	if (BondedAtom1) {
+		BondedAtom1->RemoveBond(this);
+	}
+	if (BondedAtom2) {
+		BondedAtom2->RemoveBond(this);
+	}
+
+	BondedAtom1 = nullptr;
+	BondedAtom2 = nullptr;
+
+	BondConstraint->BreakConstraint();
 }

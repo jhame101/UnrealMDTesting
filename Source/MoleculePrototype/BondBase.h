@@ -54,7 +54,9 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float BondStaticMeshLength = 100;
 
-	const bool bTwistLocked = false;
+	void ReleaseAtoms();
+
+	const bool bTwistLocked = false;		// Used in the constructor to decide if it should be a single (false) or other type of bond. To change in a derived class, edit the physics constraint.
 	const float LinearStiffness = 300;
 	const float AngularStiffness = 200;
 

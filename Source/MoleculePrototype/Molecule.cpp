@@ -6,7 +6,6 @@
 #include "Components/ChildActorComponent.h"
 #include "Math/UnrealMathUtility.h"
 
-// Sets default values
 AMolecule::AMolecule()
 {
 	PrimaryActorTick.bCanEverTick = false;
